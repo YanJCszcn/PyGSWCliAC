@@ -9,6 +9,7 @@ s.open_port(pn)
 
 
 import PySwitchCli as sw
+import Switch_struct_enum as swse
 sw.init()
 v = s.r(0xfa10)
 print ("r(0xfa10) = 0x%04x"%v)
@@ -63,6 +64,7 @@ def mdior(phyid, addr):
     return sw.mdior(phyid, addr)
 
 #### manually PCE process
+'''
 def pce_pinit(idx, enb):
     return sw.pce_pinit(idx, enb)
 
@@ -82,14 +84,141 @@ def pyGSW_PceRuleReadf(idx, enb):
     ret = sw.pyGSW_PceRuleReadf(idx, enb)
     with open(fn) as f:
     	print (f.read())
+'''
 
 nRet = { 0: 'GSW_statusOk', -1: 'GSW_statusErr', -2: 'GSW_statusParam', -3: 'GSW_statusVLAN_Space', -4: 'GSW_statusVLAN_ID', -5: 'GSW_statusInvalIoctl',\
         -6: 'GSW_statusNoSupport', -7: 'GSW_statusTimeout', -8: 'GSW_statusValueRange', -9: 'GSW_statusPortInvalid', -10: 'GSW_statusIRQ_Invalid', \
         -11: 'GSW_statusMAC_TableFull', -12: 'GSW_statusLock_Failed', -13: 'GSW_statusMemErr', -14: 'GSW_statusBusErr', -15: 'GSW_statusTblFull'}
 
-#========== Copy from PySwitchCli.py ===============================================
-# replace _PySwitchCli with sw
-#========== Copy from PySwitchCli.py ===============================================
+#========== PCE read / write process ===============================================
+#    manually and automatically codes
+#========== PCE read / write process ===============================================
+
+def clear_pce_data():
+	p = dict()
+	a = dict()
+	p["nIndex"] = 0
+	p["bEnable"] = 0
+	p["bPortIdEnable"] = 0
+	p["nPortId"] = 0
+	p["bDSCP_Enable"] = 0
+	p["nDSCP"] = 0
+	p["bPCP_Enable"] = 0
+	p["nPCP"] = 0
+	p["bSTAG_PCP_DEI_Enable"] = 0
+	p["nSTAG_PCP_DEI"] = 0
+	p["bPktLngEnable"] = 0
+	p["nPktLng"] = 0
+	p["nPktLngRange"] = 0
+	p["bMAC_DstEnable"] = 0
+	p["nMAC_Dst0"] = 0
+	p["nMAC_Dst1"] = 0
+	p["nMAC_Dst2"] = 0
+	p["nMAC_Dst3"] = 0
+	p["nMAC_Dst4"] = 0
+	p["nMAC_Dst5"] = 0
+	p["nMAC_DstMask"] = 0
+	p["bMAC_SrcEnable"] = 0
+	p["nMAC_Src0"] = 0
+	p["nMAC_Src1"] = 0
+	p["nMAC_Src2"] = 0
+	p["nMAC_Src3"] = 0
+	p["nMAC_Src4"] = 0
+	p["nMAC_Src5"] = 0
+	p["nMAC_SrcMask"] = 0
+	p["bAppDataMSB_Enable"] = 0
+	p["nAppDataMSB"] = 0
+	p["bAppMaskRangeMSB_Select"] = 0
+	p["nAppMaskRangeMSB"] = 0
+	p["bAppDataLSB_Enable"] = 0
+	p["nAppDataLSB"] = 0
+	p["bAppMaskRangeLSB_Select"] = 0
+	p["nAppMaskRangeLSB"] = 0
+	p["eDstIP_Select"] = 0
+	p["nDstIPipv4"] = 0
+	p["nDstIPipv60"] = 0
+	p["nDstIPipv61"] = 0
+	p["nDstIPipv62"] = 0
+	p["nDstIPipv63"] = 0
+	p["nDstIPipv64"] = 0
+	p["nDstIPipv65"] = 0
+	p["nDstIPipv66"] = 0
+	p["nDstIPipv67"] = 0
+	p["nDstIP_Mask"] = 0
+	p["eSrcIP_Select"] = 0
+	p["nSrcIPipv4"] = 0
+	p["nSrcIPipv60"] = 0
+	p["nSrcIPipv61"] = 0
+	p["nSrcIPipv62"] = 0
+	p["nSrcIPipv63"] = 0
+	p["nSrcIPipv64"] = 0
+	p["nSrcIPipv65"] = 0
+	p["nSrcIPipv66"] = 0
+	p["nSrcIPipv67"] = 0
+	p["nSrcIP_Mask"] = 0
+	p["bEtherTypeEnable"] = 0
+	p["nEtherType"] = 0
+	p["nEtherTypeMask"] = 0
+	p["bProtocolEnable"] = 0
+	p["nProtocol"] = 0
+	p["nProtocolMask"] = 0
+	p["bSessionIdEnable"] = 0
+	p["nSessionId"] = 0
+	p["bVid"] = 0
+	p["nVid"] = 0
+	p["bVidRange_Select"] = 0
+	p["nVidRange"] = 0
+	p["bSLAN_Vid"] = 0
+	p["nSLAN_Vid"] = 0
+	a["eTrafficClassAction"] = 0
+	a["nTrafficClassAlternate"] = 0
+	a["eSnoopingTypeAction"] = 0
+	a["eLearningAction"] = 0
+	a["eIrqAction"] = 0
+	a["eCrossStateAction"] = 0
+	a["eCritFrameAction"] = 0
+	a["eTimestampAction"] = 0
+	a["ePortMapAction"] = 0
+	a["nForwardPortMap"] = 0
+	a["bRemarkAction"] = 0
+	a["bRemarkPCP"] = 0
+	a["bRemarkSTAG_PCP"] = 0
+	a["bRemarkSTAG_DEI"] = 0
+	a["bRemarkDSCP"] = 0
+	a["bRemarkClass"] = 0
+	a["eMeterAction"] = 0
+	a["nMeterId"] = 0
+	a["bRMON_Action"] = 0
+	a["nRMON_Id"] = 0
+	a["eVLAN_Action"] = 0
+	a["nVLAN_Id"] = 0
+	a["nFId"] = 0
+	a["eSVLAN_Action"] = 0
+	a["nSVLAN_Id"] = 0
+	a["eVLAN_CrossAction"] = 0
+	a["bCVLAN_Ignore_Control"] = 0
+	a["bPortBitMapMuxControl"] = 0
+	a["bPortTrunkAction"] = 0
+	a["bPortLinkSelection"] = 0
+	a["bFlowID_Action"] = 0
+	a["nFlowID"] = 0
+	return [p, a]
+
+def pyGSW_PceRuleWrite(p, a):
+	ret = dict()
+	ret["ret"] =  sw.pyGSW_PceRuleWrite(p["nIndex"], p["bEnable"], p["bPortIdEnable"], p["nPortId"], p["bDSCP_Enable"], p["nDSCP"], p["bPCP_Enable"], p["nPCP"], p["bSTAG_PCP_DEI_Enable"], p["nSTAG_PCP_DEI"], p["bPktLngEnable"], p["nPktLng"], p["nPktLngRange"], p["bMAC_DstEnable"], p["nMAC_Dst0"], p["nMAC_Dst1"], p["nMAC_Dst2"], p["nMAC_Dst3"], p["nMAC_Dst4"], p["nMAC_Dst5"], p["nMAC_DstMask"], p["bMAC_SrcEnable"], p["nMAC_Src0"], p["nMAC_Src1"], p["nMAC_Src2"], p["nMAC_Src3"], p["nMAC_Src4"], p["nMAC_Src5"], p["nMAC_SrcMask"], p["bAppDataMSB_Enable"], p["nAppDataMSB"], p["bAppMaskRangeMSB_Select"], p["nAppMaskRangeMSB"], p["bAppDataLSB_Enable"], p["nAppDataLSB"], p["bAppMaskRangeLSB_Select"], p["nAppMaskRangeLSB"], p["eDstIP_Select"], p["nDstIPipv4"], p["nDstIPipv60"], p["nDstIPipv61"], p["nDstIPipv62"], p["nDstIPipv63"], p["nDstIPipv64"], p["nDstIPipv65"], p["nDstIPipv66"], p["nDstIPipv67"], p["nDstIP_Mask"], p["eSrcIP_Select"], p["nSrcIPipv4"], p["nSrcIPipv60"], p["nSrcIPipv61"], p["nSrcIPipv62"], p["nSrcIPipv63"], p["nSrcIPipv64"], p["nSrcIPipv65"], p["nSrcIPipv66"], p["nSrcIPipv67"], p["nSrcIP_Mask"], p["bEtherTypeEnable"], p["nEtherType"], p["nEtherTypeMask"], p["bProtocolEnable"], p["nProtocol"], p["nProtocolMask"], p["bSessionIdEnable"], p["nSessionId"], p["bVid"], p["nVid"], p["bVidRange_Select"], p["nVidRange"], p["bSLAN_Vid"], p["nSLAN_Vid"], a["eTrafficClassAction"], a["nTrafficClassAlternate"], a["eSnoopingTypeAction"], a["eLearningAction"], a["eIrqAction"], a["eCrossStateAction"], a["eCritFrameAction"], a["eTimestampAction"], a["ePortMapAction"], a["nForwardPortMap"], a["bRemarkAction"], a["bRemarkPCP"], a["bRemarkSTAG_PCP"], a["bRemarkSTAG_DEI"], a["bRemarkDSCP"], a["bRemarkClass"], a["eMeterAction"], a["nMeterId"], a["bRMON_Action"], a["nRMON_Id"], a["eVLAN_Action"], a["nVLAN_Id"], a["nFId"], a["eSVLAN_Action"], a["nSVLAN_Id"], a["eVLAN_CrossAction"], a["bCVLAN_Ignore_Control"], a["bPortBitMapMuxControl"], a["bPortTrunkAction"], a["bPortLinkSelection"], a["bFlowID_Action"], a["nFlowID"])
+	return ret
+
+def pyGSW_PceRuleRead(idx = 0):
+	ret = dict()
+	ret["ret"] = sw.pyGSW_PceRuleRead(idx)
+	fo = open(fn, "r")
+	print (fo.read())
+	return ret
+
+#========== Auto Adap PySwitchCli.py functions ===============================================
+#    Auto generated code from abc.ipynb "Generate Switch.py"
+#========== Auto Adap PySwitchCli.py functions ===============================================
 
 def pyGSW_8021X_EAPOL_RuleGet(nForwardPortId = 0, pr = 1):
 	ret = dict()
@@ -108,7 +237,14 @@ def pyGSW_8021X_EAPOL_RuleGet(nForwardPortId = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -134,7 +270,14 @@ def pyGSW_8021X_PortCfgGet(nPortId = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -172,7 +315,14 @@ def pyGSW_MAC_TableEntryQuery(nMAC = [0, 0, 0, 0, 0, 0], nFId = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -193,7 +343,14 @@ def pyGSW_MAC_TableEntryRead(bInitial = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -219,7 +376,14 @@ def pyGSW_STP_BPDU_RuleGet(pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -245,7 +409,14 @@ def pyGSW_STP_PortCfgGet(nPortId = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -271,7 +442,14 @@ def pyGSW_TrunkingCfgGet(pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -297,7 +475,14 @@ def pyGSW_TrunkingPortCfgGet(nPortId = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -323,7 +508,14 @@ def pyGSW_SVLAN_CfgGet(pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -349,7 +541,14 @@ def pyGSW_SVLAN_PortCfgGet(nPortId = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -392,7 +591,14 @@ def pyGSW_VLAN_IdGet(nVId = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -413,7 +619,14 @@ def pyGSW_VLAN_PortCfgGet(nPortId = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -446,7 +659,14 @@ def pyGSW_VLAN_PortMemberRead(bInitial = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -482,7 +702,14 @@ def pyGSW_QoS_ClassDSCP_Get(pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -511,7 +738,14 @@ def pyGSW_QoS_ClassPCP_Get(pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -539,7 +773,14 @@ def pyGSW_QoS_DSCP_ClassGet(pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -588,7 +829,14 @@ def pyGSW_QoS_DSCP_DropPrecedenceCfgGet(pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -646,7 +894,14 @@ def pyGSW_QoS_FlowctrlCfgGet(pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -674,7 +929,14 @@ def pyGSW_QoS_FlowctrlPortCfgGet(nPortId = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -700,7 +962,14 @@ def pyGSW_QoS_MeterCfgGet(nMeterId = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -731,7 +1000,14 @@ def pyGSW_QoS_MeterPortDeassign(nMeterId = 0, nPortIngressId = 0, nPortEgressId 
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -752,7 +1028,14 @@ def pyGSW_QoS_MeterPortGet(bInitial = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -773,15 +1056,22 @@ def pyGSW_QoS_PCP_ClassGet(pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
 def pyGSW_QoS_PCP_ClassSet(nPCP = 0, nTrafficClass = [0, 0, 0, 0, 0, 0, 0, 0], pr = 1):
 	ret = dict()
-	ret["ret"] = sw.pyGSW_QoS_PCP_ClassSet(nPCP, nTrafficClass[0], nTrafficClass[1], nTrafficClass[2], nTrafficClass[3], \
+	ret["ret"] = swse.enum[sw.pyGSW_QoS_PCP_ClassSet(nPCP, nTrafficClass[0], nTrafficClass[1], nTrafficClass[2], nTrafficClass[3], \
           nTrafficClass[4], nTrafficClass[5], nTrafficClass[6], \
-          nTrafficClass[7])
+          nTrafficClass[7])]
 	return ret
 
 def pyGSW_QoS_PortCfgGet(nPortId = 0, pr = 1):
@@ -801,7 +1091,14 @@ def pyGSW_QoS_PortCfgGet(nPortId = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -827,7 +1124,14 @@ def pyGSW_QoS_PortRemarkingCfgGet(nPortId = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -858,7 +1162,14 @@ def pyGSW_QoS_QueueBufferReserveCfgGet(nQueueId = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -884,7 +1195,14 @@ def pyGSW_QoS_QueuePortGet(nPortId = 0, nTrafficClassId = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -910,7 +1228,14 @@ def pyGSW_QoS_SVLAN_ClassPCP_PortGet(nPortId = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -947,7 +1272,14 @@ def pyGSW_QoS_SVLAN_PCP_ClassGet(pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -996,7 +1328,14 @@ def pyGSW_QoS_SchedulerCfgGet(nQueueId = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -1022,7 +1361,14 @@ def pyGSW_QoS_ShaperCfgGet(nRateShaperId = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -1058,7 +1404,14 @@ def pyGSW_QoS_ShaperQueueGet(nQueueId = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -1079,7 +1432,14 @@ def pyGSW_QoS_StormCfgGet(pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -1105,7 +1465,14 @@ def pyGSW_QoS_WredCfgGet(pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -1133,7 +1500,14 @@ def pyGSW_QoS_WredPortCfgGet(nPortId = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -1161,7 +1535,14 @@ def pyGSW_QoS_WredQueueCfgGet(nQueueId = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -1194,7 +1575,14 @@ def pyGSW_MulticastRouterPortRead(bInitial = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -1220,7 +1608,14 @@ def pyGSW_MulticastSnoopCfgGet(pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -1255,7 +1650,14 @@ def pyGSW_MulticastTableEntryRead(bInitial = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -1281,7 +1683,14 @@ def pyGSW_CPU_PortCfgGet(nPortId = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -1309,7 +1718,14 @@ def pyGSW_CapGet(nCapType = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -1330,7 +1746,14 @@ def pyGSW_CfgGet(pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -1375,7 +1798,14 @@ def pyGSW_MDIO_CfgGet(pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -1401,7 +1831,14 @@ def pyGSW_MDIO_DataRead(nAddressDev = 0, nAddressReg = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -1427,7 +1864,14 @@ def pyGSW_MonitorPortCfgGet(nPortId = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -1453,7 +1897,14 @@ def pyGSW_PortCfgGet(nPortId = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -1484,7 +1935,14 @@ def pyGSW_PortLinkCfgGet(nPortId = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -1512,7 +1970,14 @@ def pyGSW_PortPHY_AddrGet(nPortId = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -1533,7 +1998,14 @@ def pyGSW_PortPHY_Query(nPortId = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -1554,7 +2026,14 @@ def pyGSW_PortRGMII_ClkCfgGet(nPortId = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -1580,7 +2059,14 @@ def pyGSW_PortRedirectGet(nPortId = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -1611,7 +2097,14 @@ def pyGSW_RMON_Port_Get(nPortId = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -1632,7 +2125,14 @@ def pyGSW_VersionGet(nId = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -1653,7 +2153,14 @@ def pyGSW_WoL_CfgGet(pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -1682,7 +2189,14 @@ def pyGSW_WoL_PortCfgGet(nPortId = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -1708,7 +2222,14 @@ def pyGSW_RegisterGet(nRegAddr = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -1734,7 +2255,14 @@ def pyGSW_IrqMaskGet(nPortId = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -1748,47 +2276,6 @@ def pyGSW_PceRuleDelete(nIndex = 0, pr = 1):
 	ret["ret"] = sw.pyGSW_PceRuleDelete(nIndex)
 	return ret
 
-def pyGSW_PceRuleRead(pr = 1):
-	ret = dict()
-	ret["ret"] = sw.pyGSW_PceRuleRead()
-
-	fo = open(fn, "r")
-	for line in fo.readlines():
-		if len(line.split()) == 1:
-			line = line[:-1] + "    ---    Return value: " + nRet[ret["ret"]] + "\n"
-		else:
-			if line.split()[0][-1] == "]":
-				s = ""
-				for i in line.split()[2:]:
-					s = s + i + " "
-				ret[line.split()[0]] = s
-			else:
-				ret[line.split()[0]] = line.split()[3]
-		if pr == 1:
-			print (line[:-1])
-	fo.close()
-	return ret
-
-def pyGSW_PceRuleWrite(pr = 1):
-	ret = dict()
-	ret["ret"] = sw.pyGSW_PceRuleWrite()
-
-	fo = open(fn, "r")
-	for line in fo.readlines():
-		if len(line.split()) == 1:
-			line = line[:-1] + "    ---    Return value: " + nRet[ret["ret"]] + "\n"
-		else:
-			if line.split()[0][-1] == "]":
-				s = ""
-				for i in line.split()[2:]:
-					s = s + i + " "
-				ret[line.split()[0]] = s
-			else:
-				ret[line.split()[0]] = line.split()[3]
-		if pr == 1:
-			print (line[:-1])
-	fo.close()
-	return ret
 
 def pyGSW_RMON_ExtendGet(nPortId = 0, pr = 1):
 	ret = dict()
@@ -1807,7 +2294,14 @@ def pyGSW_RMON_ExtendGet(nPortId = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -1833,7 +2327,14 @@ def pyGSW_TimestampPortRead(nPortId = 0, pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -1854,7 +2355,14 @@ def pyGSW_TimestampTimerGet(pr = 1):
 			else:
 				ret[line.split()[0]] = line.split()[3]
 		if pr == 1:
-			print (line[:-1])
+			s = ""
+			for st in swse.struct:
+				for p in swse.struct[st]:
+					if p[1] == line.split()[0]:
+						e = p[0]
+						if p[0] in swse.enum:
+							s = swse.enum[p[0]][line.split()[3]] + "  [" + p[0] + "]"
+			print (line[:-1], s)
 	fo.close()
 	return ret
 
@@ -1862,6 +2370,9 @@ def pyGSW_TimestampTimerSet(nSec = 0, nNanoSec = 0, nFractionalNanoSec = 0, pr =
 	ret = dict()
 	ret["ret"] = sw.pyGSW_TimestampTimerSet(nSec, nNanoSec, nFractionalNanoSec)
 	return ret
+
+
+
 
 
 
@@ -1880,7 +2391,7 @@ def Phy_sum(n):
 			"    Remote receiver OK:", (d&0x1000)/0x1000)
 		print ("SNR margin:", (c&0xf0)/0x10, "    Cable length:", (c&0xf)*10, "m")
 		str01 = ["rx err","rx frames","ESD err","SSD err","tx err","tx frames","collision","no. of link down","no. of ADS"]
-		print ("Error counter:", e&0xff, "   ", str01[(e&0xf00)/0x100%9])
+		#print ("Error counter:", e&0xff, "   ", str01[(e&0xf00)/0x100%9])
 		
 def set_counter(n):
 		print ("0: rx err")

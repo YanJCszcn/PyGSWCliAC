@@ -14,13 +14,46 @@ int w(unsigned short addr, unsigned short value);
 int mdiow ( unsigned char phyid, unsigned char addr, unsigned short value);
 unsigned short mdior ( unsigned char phyid, unsigned char addr);
 
+/*
 void pce_pinit(int idx, int enb);
 void pce_portId(int enb, int p);
 void pce_act_forwarding(int act, int portmap);
-int pyGSW_PceRuleWrite();
-int pyGSW_PceRuleRead();
+*/
+int pyGSW_PceRuleWrite(int pattern_nIndex, ltq_bool_t pattern_bEnable, ltq_bool_t pattern_bPortIdEnable, \
+       u8 pattern_nPortId, ltq_bool_t pattern_bDSCP_Enable, u8 pattern_nDSCP, ltq_bool_t pattern_bPCP_Enable, \
+       u8 pattern_nPCP, ltq_bool_t pattern_bSTAG_PCP_DEI_Enable, u8 pattern_nSTAG_PCP_DEI, \
+       ltq_bool_t pattern_bPktLngEnable, u16 pattern_nPktLng, u16 pattern_nPktLngRange, \
+       ltq_bool_t pattern_bMAC_DstEnable, u8 pattern_nMAC_Dst0, u8 pattern_nMAC_Dst1, u8 pattern_nMAC_Dst2, u8 pattern_nMAC_Dst3, u8 pattern_nMAC_Dst4, u8 pattern_nMAC_Dst5, \
+       u16 pattern_nMAC_DstMask, ltq_bool_t pattern_bMAC_SrcEnable, u8 pattern_nMAC_Src0, u8 pattern_nMAC_Src1, u8 pattern_nMAC_Src2, u8 pattern_nMAC_Src3, u8 pattern_nMAC_Src4, u8 pattern_nMAC_Src5, \
+       u16 pattern_nMAC_SrcMask, ltq_bool_t pattern_bAppDataMSB_Enable, u16 pattern_nAppDataMSB, \
+       ltq_bool_t pattern_bAppMaskRangeMSB_Select, u16 pattern_nAppMaskRangeMSB, \
+       ltq_bool_t pattern_bAppDataLSB_Enable, u16 pattern_nAppDataLSB, ltq_bool_t pattern_bAppMaskRangeLSB_Select, \
+       u16 pattern_nAppMaskRangeLSB, GSW_PCE_IP_t pattern_eDstIP_Select, u32 pattern_nDstIPipv4, \
+       u8 pattern_nDstIPipv60, u8 pattern_nDstIPipv61, u8 pattern_nDstIPipv62, u8 pattern_nDstIPipv63, u8 pattern_nDstIPipv64, u8 pattern_nDstIPipv65, u8 pattern_nDstIPipv66, u8 pattern_nDstIPipv67, \
+       u32 pattern_nDstIP_Mask, GSW_PCE_IP_t pattern_eSrcIP_Select, u32 pattern_nSrcIPipv4, \
+       u8 pattern_nSrcIPipv60, u8 pattern_nSrcIPipv61, u8 pattern_nSrcIPipv62, u8 pattern_nSrcIPipv63, u8 pattern_nSrcIPipv64, u8 pattern_nSrcIPipv65, u8 pattern_nSrcIPipv66, u8 pattern_nSrcIPipv67, \
+       u32 pattern_nSrcIP_Mask, ltq_bool_t pattern_bEtherTypeEnable, u16 pattern_nEtherType, \
+       u16 pattern_nEtherTypeMask, ltq_bool_t pattern_bProtocolEnable, u8 pattern_nProtocol, \
+       u8 pattern_nProtocolMask, ltq_bool_t pattern_bSessionIdEnable, u16 pattern_nSessionId, \
+       ltq_bool_t pattern_bVid, u16 pattern_nVid, ltq_bool_t pattern_bVidRange_Select, \
+       u16 pattern_nVidRange, ltq_bool_t pattern_bSLAN_Vid, u16 pattern_nSLAN_Vid, \
+       GSW_PCE_ActionTrafficClass_t action_eTrafficClassAction, u8 action_nTrafficClassAlternate, \
+       GSW_PCE_ActionIGMP_Snoop_t action_eSnoopingTypeAction, GSW_PCE_ActionLearning_t action_eLearningAction, \
+       GSW_PCE_ActionIrq_t action_eIrqAction, GSW_PCE_ActionCrossState_t action_eCrossStateAction, \
+       GSW_PCE_ActionCriticalFrame_t action_eCritFrameAction, GSW_PCE_ActionTimestamp_t action_eTimestampAction, \
+       GSW_PCE_ActionPortmap_t action_ePortMapAction, u32 action_nForwardPortMap, \
+       ltq_bool_t action_bRemarkAction, ltq_bool_t action_bRemarkPCP, ltq_bool_t action_bRemarkSTAG_PCP, \
+       ltq_bool_t action_bRemarkSTAG_DEI, ltq_bool_t action_bRemarkDSCP, ltq_bool_t action_bRemarkClass, \
+       GSW_PCE_ActionMeter_t action_eMeterAction, u8 action_nMeterId, ltq_bool_t action_bRMON_Action, \
+       u8 action_nRMON_Id, GSW_PCE_ActionVLAN_t action_eVLAN_Action, u16 action_nVLAN_Id, \
+       u8 action_nFId, GSW_PCE_ActionVLAN_t action_eSVLAN_Action, u16 action_nSVLAN_Id, \
+       GSW_PCE_ActionCrossVLAN_t action_eVLAN_CrossAction, ltq_bool_t action_bCVLAN_Ignore_Control, \
+       ltq_bool_t action_bPortBitMapMuxControl, ltq_bool_t action_bPortTrunkAction, \
+       ltq_bool_t action_bPortLinkSelection, ltq_bool_t action_bFlowID_Action, u16 action_nFlowID);
+int pyGSW_PceRuleRead(int idx);
+/*
 int pyGSW_PceRuleReadf(int idx, int enb);
-
+*/
 /**************************************************/
 /*         Auto Code Generated                    */
 /**************************************************/ 

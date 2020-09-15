@@ -143,11 +143,211 @@ int pyGSW_HW_Init()
 */ 
 
 
-/**************************************************/
-/*       Manually PCE functions                   */
-/**************************************************/
+/****************************************************************************/
+/*       Manually and Automatically code of PCE functions                   */
+/****************************************************************************/
 
+int pyGSW_PceRuleWrite(int pattern_nIndex, ltq_bool_t pattern_bEnable, ltq_bool_t pattern_bPortIdEnable, \
+       u8 pattern_nPortId, ltq_bool_t pattern_bDSCP_Enable, u8 pattern_nDSCP, ltq_bool_t pattern_bPCP_Enable, \
+       u8 pattern_nPCP, ltq_bool_t pattern_bSTAG_PCP_DEI_Enable, u8 pattern_nSTAG_PCP_DEI, \
+       ltq_bool_t pattern_bPktLngEnable, u16 pattern_nPktLng, u16 pattern_nPktLngRange, \
+       ltq_bool_t pattern_bMAC_DstEnable, u8 pattern_nMAC_Dst0, u8 pattern_nMAC_Dst1, u8 pattern_nMAC_Dst2, u8 pattern_nMAC_Dst3, u8 pattern_nMAC_Dst4, u8 pattern_nMAC_Dst5, \
+       u16 pattern_nMAC_DstMask, ltq_bool_t pattern_bMAC_SrcEnable, u8 pattern_nMAC_Src0, u8 pattern_nMAC_Src1, u8 pattern_nMAC_Src2, u8 pattern_nMAC_Src3, u8 pattern_nMAC_Src4, u8 pattern_nMAC_Src5, \
+       u16 pattern_nMAC_SrcMask, ltq_bool_t pattern_bAppDataMSB_Enable, u16 pattern_nAppDataMSB, \
+       ltq_bool_t pattern_bAppMaskRangeMSB_Select, u16 pattern_nAppMaskRangeMSB, \
+       ltq_bool_t pattern_bAppDataLSB_Enable, u16 pattern_nAppDataLSB, ltq_bool_t pattern_bAppMaskRangeLSB_Select, \
+       u16 pattern_nAppMaskRangeLSB, GSW_PCE_IP_t pattern_eDstIP_Select, u32 pattern_nDstIPipv4, \
+       u8 pattern_nDstIPipv60, u8 pattern_nDstIPipv61, u8 pattern_nDstIPipv62, u8 pattern_nDstIPipv63, u8 pattern_nDstIPipv64, u8 pattern_nDstIPipv65, u8 pattern_nDstIPipv66, u8 pattern_nDstIPipv67, \
+       u32 pattern_nDstIP_Mask, GSW_PCE_IP_t pattern_eSrcIP_Select, u32 pattern_nSrcIPipv4, \
+       u8 pattern_nSrcIPipv60, u8 pattern_nSrcIPipv61, u8 pattern_nSrcIPipv62, u8 pattern_nSrcIPipv63, u8 pattern_nSrcIPipv64, u8 pattern_nSrcIPipv65, u8 pattern_nSrcIPipv66, u8 pattern_nSrcIPipv67, \
+       u32 pattern_nSrcIP_Mask, ltq_bool_t pattern_bEtherTypeEnable, u16 pattern_nEtherType, \
+       u16 pattern_nEtherTypeMask, ltq_bool_t pattern_bProtocolEnable, u8 pattern_nProtocol, \
+       u8 pattern_nProtocolMask, ltq_bool_t pattern_bSessionIdEnable, u16 pattern_nSessionId, \
+       ltq_bool_t pattern_bVid, u16 pattern_nVid, ltq_bool_t pattern_bVidRange_Select, \
+       u16 pattern_nVidRange, ltq_bool_t pattern_bSLAN_Vid, u16 pattern_nSLAN_Vid, \
+       GSW_PCE_ActionTrafficClass_t action_eTrafficClassAction, u8 action_nTrafficClassAlternate, \
+       GSW_PCE_ActionIGMP_Snoop_t action_eSnoopingTypeAction, GSW_PCE_ActionLearning_t action_eLearningAction, \
+       GSW_PCE_ActionIrq_t action_eIrqAction, GSW_PCE_ActionCrossState_t action_eCrossStateAction, \
+       GSW_PCE_ActionCriticalFrame_t action_eCritFrameAction, GSW_PCE_ActionTimestamp_t action_eTimestampAction, \
+       GSW_PCE_ActionPortmap_t action_ePortMapAction, u32 action_nForwardPortMap, \
+       ltq_bool_t action_bRemarkAction, ltq_bool_t action_bRemarkPCP, ltq_bool_t action_bRemarkSTAG_PCP, \
+       ltq_bool_t action_bRemarkSTAG_DEI, ltq_bool_t action_bRemarkDSCP, ltq_bool_t action_bRemarkClass, \
+       GSW_PCE_ActionMeter_t action_eMeterAction, u8 action_nMeterId, ltq_bool_t action_bRMON_Action, \
+       u8 action_nRMON_Id, GSW_PCE_ActionVLAN_t action_eVLAN_Action, u16 action_nVLAN_Id, \
+       u8 action_nFId, GSW_PCE_ActionVLAN_t action_eSVLAN_Action, u16 action_nSVLAN_Id, \
+       GSW_PCE_ActionCrossVLAN_t action_eVLAN_CrossAction, ltq_bool_t action_bCVLAN_Ignore_Control, \
+       ltq_bool_t action_bPortBitMapMuxControl, ltq_bool_t action_bPortTrunkAction, \
+       ltq_bool_t action_bPortLinkSelection, ltq_bool_t action_bFlowID_Action, u16 action_nFlowID)
+{
+    int ret;
+    GSW_PCE_rule_t param;
+    param.pattern.nIndex = pattern_nIndex;
+    param.pattern.bEnable = pattern_bEnable;
+    param.pattern.bPortIdEnable = pattern_bPortIdEnable;
+    param.pattern.nPortId = pattern_nPortId;
+    param.pattern.bDSCP_Enable = pattern_bDSCP_Enable;
+    param.pattern.nDSCP = pattern_nDSCP;
+    param.pattern.bPCP_Enable = pattern_bPCP_Enable;
+    param.pattern.nPCP = pattern_nPCP;
+    param.pattern.bSTAG_PCP_DEI_Enable = pattern_bSTAG_PCP_DEI_Enable;
+    param.pattern.nSTAG_PCP_DEI = pattern_nSTAG_PCP_DEI;
+    param.pattern.bPktLngEnable = pattern_bPktLngEnable;
+    param.pattern.nPktLng = pattern_nPktLng;
+    param.pattern.nPktLngRange = pattern_nPktLngRange;
+    param.pattern.bMAC_DstEnable = pattern_bMAC_DstEnable;
+    param.pattern.nMAC_Dst[0] = pattern_nMAC_Dst0;
+    param.pattern.nMAC_Dst[1] = pattern_nMAC_Dst1;
+    param.pattern.nMAC_Dst[2] = pattern_nMAC_Dst2;
+    param.pattern.nMAC_Dst[3] = pattern_nMAC_Dst3;
+    param.pattern.nMAC_Dst[4] = pattern_nMAC_Dst4;
+    param.pattern.nMAC_Dst[5] = pattern_nMAC_Dst5;
+    param.pattern.nMAC_DstMask = pattern_nMAC_DstMask;
+    param.pattern.bMAC_SrcEnable = pattern_bMAC_SrcEnable;
+    param.pattern.nMAC_Src[0] = pattern_nMAC_Src0;
+    param.pattern.nMAC_Src[1] = pattern_nMAC_Src1;
+    param.pattern.nMAC_Src[2] = pattern_nMAC_Src2;
+    param.pattern.nMAC_Src[3] = pattern_nMAC_Src3;
+    param.pattern.nMAC_Src[4] = pattern_nMAC_Src4;
+    param.pattern.nMAC_Src[5] = pattern_nMAC_Src5;
+    param.pattern.nMAC_SrcMask = pattern_nMAC_SrcMask;
+    param.pattern.bAppDataMSB_Enable = pattern_bAppDataMSB_Enable;
+    param.pattern.nAppDataMSB = pattern_nAppDataMSB;
+    param.pattern.bAppMaskRangeMSB_Select = pattern_bAppMaskRangeMSB_Select;
+    param.pattern.nAppMaskRangeMSB = pattern_nAppMaskRangeMSB;
+    param.pattern.bAppDataLSB_Enable = pattern_bAppDataLSB_Enable;
+    param.pattern.nAppDataLSB = pattern_nAppDataLSB;
+    param.pattern.bAppMaskRangeLSB_Select = pattern_bAppMaskRangeLSB_Select;
+    param.pattern.nAppMaskRangeLSB = pattern_nAppMaskRangeLSB;
+    param.pattern.eDstIP_Select = pattern_eDstIP_Select;
+    param.pattern.nDstIP.nIPv4 = pattern_nDstIPipv4;
+    param.pattern.nDstIP.nIPv6[0] = pattern_nDstIPipv60;
+    param.pattern.nDstIP.nIPv6[1] = pattern_nDstIPipv61;
+    param.pattern.nDstIP.nIPv6[2] = pattern_nDstIPipv62;
+    param.pattern.nDstIP.nIPv6[3] = pattern_nDstIPipv63;
+    param.pattern.nDstIP.nIPv6[4] = pattern_nDstIPipv64;
+    param.pattern.nDstIP.nIPv6[5] = pattern_nDstIPipv65;
+    param.pattern.nDstIP.nIPv6[6] = pattern_nDstIPipv66;
+    param.pattern.nDstIP.nIPv6[7] = pattern_nDstIPipv67;
+    param.pattern.nDstIP_Mask = pattern_nDstIP_Mask;
+    param.pattern.eSrcIP_Select = pattern_eSrcIP_Select;
+    param.pattern.nSrcIP.nIPv4 = pattern_nSrcIPipv4;
+    param.pattern.nSrcIP.nIPv6[0] = pattern_nSrcIPipv60;
+    param.pattern.nSrcIP.nIPv6[1] = pattern_nSrcIPipv61;
+    param.pattern.nSrcIP.nIPv6[2] = pattern_nSrcIPipv62;
+    param.pattern.nSrcIP.nIPv6[3] = pattern_nSrcIPipv63;
+    param.pattern.nSrcIP.nIPv6[4] = pattern_nSrcIPipv64;
+    param.pattern.nSrcIP.nIPv6[5] = pattern_nSrcIPipv65;
+    param.pattern.nSrcIP.nIPv6[6] = pattern_nSrcIPipv66;
+    param.pattern.nSrcIP.nIPv6[7] = pattern_nSrcIPipv67;
+    param.pattern.nSrcIP_Mask = pattern_nSrcIP_Mask;
+    param.pattern.bEtherTypeEnable = pattern_bEtherTypeEnable;
+    param.pattern.nEtherType = pattern_nEtherType;
+    param.pattern.nEtherTypeMask = pattern_nEtherTypeMask;
+    param.pattern.bProtocolEnable = pattern_bProtocolEnable;
+    param.pattern.nProtocol = pattern_nProtocol;
+    param.pattern.nProtocolMask = pattern_nProtocolMask;
+    param.pattern.bSessionIdEnable = pattern_bSessionIdEnable;
+    param.pattern.nSessionId = pattern_nSessionId;
+    param.pattern.bVid = pattern_bVid;
+    param.pattern.nVid = pattern_nVid;
+    param.pattern.bVidRange_Select = pattern_bVidRange_Select;
+    param.pattern.nVidRange = pattern_nVidRange;
+    param.pattern.bSLAN_Vid = pattern_bSLAN_Vid;
+    param.pattern.nSLAN_Vid = pattern_nSLAN_Vid;
+    param.action.eTrafficClassAction = action_eTrafficClassAction;
+    param.action.nTrafficClassAlternate = action_nTrafficClassAlternate;
+    param.action.eSnoopingTypeAction = action_eSnoopingTypeAction;
+    param.action.eLearningAction = action_eLearningAction;
+    param.action.eIrqAction = action_eIrqAction;
+    param.action.eCrossStateAction = action_eCrossStateAction;
+    param.action.eCritFrameAction = action_eCritFrameAction;
+    param.action.eTimestampAction = action_eTimestampAction;
+    param.action.ePortMapAction = action_ePortMapAction;
+    param.action.nForwardPortMap = action_nForwardPortMap;
+    param.action.bRemarkAction = action_bRemarkAction;
+    param.action.bRemarkPCP = action_bRemarkPCP;
+    param.action.bRemarkSTAG_PCP = action_bRemarkSTAG_PCP;
+    param.action.bRemarkSTAG_DEI = action_bRemarkSTAG_DEI;
+    param.action.bRemarkDSCP = action_bRemarkDSCP;
+    param.action.bRemarkClass = action_bRemarkClass;
+    param.action.eMeterAction = action_eMeterAction;
+    param.action.nMeterId = action_nMeterId;
+    param.action.bRMON_Action = action_bRMON_Action;
+    param.action.nRMON_Id = action_nRMON_Id;
+    param.action.eVLAN_Action = action_eVLAN_Action;
+    param.action.nVLAN_Id = action_nVLAN_Id;
+    param.action.nFId = action_nFId;
+    param.action.eSVLAN_Action = action_eSVLAN_Action;
+    param.action.nSVLAN_Id = action_nSVLAN_Id;
+    param.action.eVLAN_CrossAction = action_eVLAN_CrossAction;
+    param.action.bCVLAN_Ignore_Control = action_bCVLAN_Ignore_Control;
+    param.action.bPortBitMapMuxControl = action_bPortBitMapMuxControl;
+    param.action.bPortTrunkAction = action_bPortTrunkAction;
+    param.action.bPortLinkSelection = action_bPortLinkSelection;
+    param.action.bFlowID_Action = action_bFlowID_Action;
+    param.action.nFlowID = action_nFlowID;
+    ret = 	GSW_PceRuleWrite(pedev0, &param);
+    return ret;
+}
 
+int pyGSW_PceRuleRead(int idx)
+{
+    int ret;
+    FILE *fp;
+    GSW_PCE_rule_t param;
+    GSW_PCE_action_t action;
+    GSW_PCE_pattern_t pattern;
+    param.pattern.nIndex = idx;
+    ret = GSW_PceRuleRead(pedev0, &param);
+    pattern = param.pattern;
+    action = param.action;
+
+    fp = fopen (fn, "w+");
+
+    fprintf(fp, "param.pattern.nDstIP.nIPv4 = %08x, %d \r\n", pattern.nDstIP.nIPv4, pattern.nDstIP.nIPv4);
+
+    fprintf(fp, "PCE rule index %d, enabled = %d\r\n", pattern.nIndex, pattern.bEnable);
+    fprintf(fp, "pattern:\r\n");
+    fprintf(fp, "   , bPortIdEnable = %d, nPortId = %d\r\n", pattern.bPortIdEnable, pattern.nPortId);
+    fprintf(fp, "   , bDSCP_Enable = %d, nDSCP = %d\r\n", pattern.bDSCP_Enable, pattern.nDSCP);
+    fprintf(fp, "   , bPCP_Enable = %d, nPCP = %d\r\n", pattern.bPCP_Enable, pattern.nPCP);
+    fprintf(fp, "   , bSTAG_PCP_DEI_Enable = %d, nSTAG_PCP_DEI = %d\r\n", pattern.bSTAG_PCP_DEI_Enable, pattern.nSTAG_PCP_DEI);
+    fprintf(fp, "   , bPktLngEnable = %d, nPktLng = %d, nPktLngRange = %d\r\n", pattern.bPktLngEnable, pattern.nPktLng, pattern.nPktLngRange);
+    fprintf(fp, "   , bMAC_DstEnable = %d, nMAC_Dst = %02x:%02x:%02x:%02x:%02x:%02x, nMAC_DstMask = %d\r\n", pattern.bMAC_DstEnable, pattern.nMAC_Dst[0], pattern.nMAC_Dst[1], pattern.nMAC_Dst[2], pattern.nMAC_Dst[3], pattern.nMAC_Dst[4], pattern.nMAC_Dst[5], pattern.nMAC_DstMask);
+    fprintf(fp, "   , bMAC_SrcEnable = %d, nMAC_Src = %02x:%02x:%02x:%02x:%02x:%02x, nMAC_SrcMask = %d\r\n", pattern.bMAC_SrcEnable, pattern.nMAC_Src[0], pattern.nMAC_Src[1], pattern.nMAC_Src[2], pattern.nMAC_Src[3], pattern.nMAC_Src[4], pattern.nMAC_Src[5], pattern.nMAC_SrcMask);
+    fprintf(fp, "   , bAppDataMSB_Enable = %d, nAppDataMSB = %d\r\n", pattern.bAppDataMSB_Enable, pattern.nAppDataMSB);
+    fprintf(fp, "   , bAppMaskRangeMSB_Select = %d, nAppMaskRangeMSB = %d\r\n", pattern.bAppMaskRangeMSB_Select, pattern.nAppMaskRangeMSB);
+    fprintf(fp, "   , bAppDataLSB_Enable = %d, nAppDataLSB = %d\r\n", pattern.bAppDataLSB_Enable, pattern.nAppDataLSB);
+    fprintf(fp, "   , bAppMaskRangeLSB_Select = %d, nAppMaskRangeLSB = %d\r\n", pattern.bAppMaskRangeLSB_Select, pattern.nAppMaskRangeLSB);
+    fprintf(fp, "   , eDstIP_Select = %d, nDstIPipv4 = %d.%d.%d.%d, nDstIPipv6 = %02x%02x:%02x%02x:%02x%02x:%02x%02x, nDstIP_Mask = %d\r\n", pattern.eDstIP_Select, pattern.nDstIP.nIPv4/0x1000000, pattern.nDstIP.nIPv4/0x10000%0x100, pattern.nDstIP.nIPv4/0x100%0x100, pattern.nDstIP.nIPv4%0x100, pattern.nDstIP.nIPv6[0], pattern.nDstIP.nIPv6[1], pattern.nDstIP.nIPv6[2], pattern.nDstIP.nIPv6[3], pattern.nDstIP.nIPv6[4], pattern.nDstIP.nIPv6[5], pattern.nDstIP.nIPv6[6], pattern.nDstIP.nIPv6[7], pattern.nDstIP_Mask);
+    fprintf(fp, "   , eSrcIP_Select = %d, nSrcIPipv4 = %d.%d.%d.%d, nSrcIPipv6 = %02x%02x:%02x%02x:%02x%02x:%02x%02x, nSrcIP_Mask = %d\r\n", pattern.eSrcIP_Select, pattern.nSrcIP.nIPv4/0x1000000, pattern.nDstIP.nIPv4/0x10000%0x100, pattern.nDstIP.nIPv4/0x100%0x100, pattern.nDstIP.nIPv4%0x100, pattern.nSrcIP.nIPv6[0], pattern.nSrcIP.nIPv6[1], pattern.nSrcIP.nIPv6[2], pattern.nSrcIP.nIPv6[3], pattern.nSrcIP.nIPv6[4], pattern.nSrcIP.nIPv6[5], pattern.nSrcIP.nIPv6[6], pattern.nSrcIP.nIPv6[7], pattern.nSrcIP_Mask);
+    fprintf(fp, "   , bEtherTypeEnable = %d, nEtherType = %d, nEtherTypeMask = %d\r\n", pattern.bEtherTypeEnable, pattern.nEtherType, pattern.nEtherTypeMask);
+    fprintf(fp, "   , bProtocolEnable = %d, nProtocol = %d, nProtocolMask = %d\r\n", pattern.bProtocolEnable, pattern.nProtocol, pattern.nProtocolMask);
+    fprintf(fp, "   , bSessionIdEnable = %d, nSessionId = %d, bVid = %d, nVid = %d\r\n", pattern.bSessionIdEnable, pattern.nSessionId, pattern.bVid, pattern.nVid);
+    fprintf(fp, "   , bVidRange_Select = %d, nVidRange = %d, bSLAN_Vid = %d, nSLAN_Vid = %d\r\n", pattern.bVidRange_Select, pattern.nVidRange, pattern.bSLAN_Vid, pattern.nSLAN_Vid);
+
+    fprintf(fp, "Action:\r\n");
+    fprintf(fp, "   , eTrafficClassAction = %d, nTrafficClassAlternate = %d\r\n", action.eTrafficClassAction, action.nTrafficClassAlternate);
+    fprintf(fp, "   , eSnoopingTypeAction = %d\r\n", action.eSnoopingTypeAction);
+    fprintf(fp, "   , eLearningAction = %d\r\n", action.eLearningAction);
+    fprintf(fp, "   , eIrqAction = %d\r\n", action.eIrqAction);
+    fprintf(fp, "   , eCrossStateAction = %d\r\n", action.eCrossStateAction);
+    fprintf(fp, "   , eCritFrameAction = %d\r\n", action.eCritFrameAction);
+    fprintf(fp, "   , eTimestampAction = %d\r\n", action.eTimestampAction);
+    fprintf(fp, "   , ePortMapAction = %d, nForwardPortMap = %d\r\n", action.ePortMapAction, action.nForwardPortMap);
+    fprintf(fp, "   , bRemarkAction = %d, bRemarkPCP = %d, bRemarkSTAG_PCP = %d, bRemarkSTAG_DEI = %d, bRemarkDSCP = %d, bRemarkClass = %d\r\n", action.bRemarkAction, action.bRemarkPCP, action.bRemarkSTAG_PCP, action.bRemarkSTAG_DEI, action.bRemarkDSCP, action.bRemarkClass);
+    fprintf(fp, "   , eMeterAction = %d, nMeterId = %d\r\n", action.eMeterAction, action.nMeterId);
+    fprintf(fp, "   , bRMON_Action = %d, nRMON_Id = %d\r\n", action.bRMON_Action, action.nRMON_Id);
+    fprintf(fp, "   , eVLAN_Action = %d, nVLAN_Id = %d, nFId = %d\r\n", action.eVLAN_Action, action.nVLAN_Id, action.nFId);
+    fprintf(fp, "   , eSVLAN_Action = %d, nSVLAN_Id = %d\r\n", action.eSVLAN_Action, action.nSVLAN_Id);
+    fprintf(fp, "   , eVLAN_CrossAction = %d, bCVLAN_Ignore_Control = %d, bPortBitMapMuxControl = %d\r\n", action.eVLAN_CrossAction, action.bCVLAN_Ignore_Control, action.bPortBitMapMuxControl);
+    fprintf(fp, "   , bPortTrunkAction = %d, bPortLinkSelection = %d\r\n", action.bPortTrunkAction, action.bPortLinkSelection);
+    fprintf(fp, "   , bFlowID_Action = %d, nFlowID = %d\r\n", action.bFlowID_Action, action.nFlowID);
+    fclose(fp);
+    return ret;
+
+}
+#if 0
 GSW_PCE_rule_t p;
 void pce_pinit(int idx, int enb)
 {
@@ -180,6 +380,8 @@ void pce_act_forwarding(int act, int portmap)
 	p.action.nForwardPortMap = portmap;
 	printf(", p.ePortMapAction = %d, p.nForwardPortMap = %d", act, portmap);
 }
+
+
 int pyGSW_PceRuleWrite()
 {
 	printf(" -- write]\r\n");
@@ -320,7 +522,7 @@ int pyGSW_PceRuleReadf(int idx, int enb)
   fclose(fp);
   return 0;
 }                                                                       
-
+#endif
 
 /**************************************************/
 /*         Auto Code Generated                    */
