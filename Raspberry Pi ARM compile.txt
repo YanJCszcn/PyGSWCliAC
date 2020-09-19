@@ -1,0 +1,15 @@
+
+swig 3.0.12, python 3.7.3
+
+Compile commands: attention - use python3
+    swig -python -py3 -castmode PySwitch.i
+    python3 setup.py build_ext --inplace
+
+
+/****** Souce code adaption ******/ 
+
+#define KERNEL_MODE 0
+#define WIN_PC_MODE 0  
+
+Unmask #include <sys/ioctl.h>
+
