@@ -219,26 +219,38 @@ int pyGSW_PceRuleWrite(int pattern_nIndex, ltq_bool_t pattern_bEnable, ltq_bool_
     param.pattern.bAppMaskRangeLSB_Select = pattern_bAppMaskRangeLSB_Select;
     param.pattern.nAppMaskRangeLSB = pattern_nAppMaskRangeLSB;
     param.pattern.eDstIP_Select = pattern_eDstIP_Select;
-    param.pattern.nDstIP.nIPv4 = pattern_nDstIPipv4;
-    param.pattern.nDstIP.nIPv6[0] = pattern_nDstIPipv60;
-    param.pattern.nDstIP.nIPv6[1] = pattern_nDstIPipv61;
-    param.pattern.nDstIP.nIPv6[2] = pattern_nDstIPipv62;
-    param.pattern.nDstIP.nIPv6[3] = pattern_nDstIPipv63;
-    param.pattern.nDstIP.nIPv6[4] = pattern_nDstIPipv64;
-    param.pattern.nDstIP.nIPv6[5] = pattern_nDstIPipv65;
-    param.pattern.nDstIP.nIPv6[6] = pattern_nDstIPipv66;
-    param.pattern.nDstIP.nIPv6[7] = pattern_nDstIPipv67;
+    if (pattern_eDstIP_Select == GSW_PCE_IP_V4)
+    {
+        param.pattern.nDstIP.nIPv4 = pattern_nDstIPipv4;
+    }
+    else if (pattern_eDstIP_Select == GSW_PCE_IP_V6)
+    {
+        param.pattern.nDstIP.nIPv6[0] = pattern_nDstIPipv60;
+        param.pattern.nDstIP.nIPv6[1] = pattern_nDstIPipv61;
+        param.pattern.nDstIP.nIPv6[2] = pattern_nDstIPipv62;
+        param.pattern.nDstIP.nIPv6[3] = pattern_nDstIPipv63;
+        param.pattern.nDstIP.nIPv6[4] = pattern_nDstIPipv64;
+        param.pattern.nDstIP.nIPv6[5] = pattern_nDstIPipv65;
+        param.pattern.nDstIP.nIPv6[6] = pattern_nDstIPipv66;
+        param.pattern.nDstIP.nIPv6[7] = pattern_nDstIPipv67;
+    }
     param.pattern.nDstIP_Mask = pattern_nDstIP_Mask;
     param.pattern.eSrcIP_Select = pattern_eSrcIP_Select;
-    param.pattern.nSrcIP.nIPv4 = pattern_nSrcIPipv4;
-    param.pattern.nSrcIP.nIPv6[0] = pattern_nSrcIPipv60;
-    param.pattern.nSrcIP.nIPv6[1] = pattern_nSrcIPipv61;
-    param.pattern.nSrcIP.nIPv6[2] = pattern_nSrcIPipv62;
-    param.pattern.nSrcIP.nIPv6[3] = pattern_nSrcIPipv63;
-    param.pattern.nSrcIP.nIPv6[4] = pattern_nSrcIPipv64;
-    param.pattern.nSrcIP.nIPv6[5] = pattern_nSrcIPipv65;
-    param.pattern.nSrcIP.nIPv6[6] = pattern_nSrcIPipv66;
-    param.pattern.nSrcIP.nIPv6[7] = pattern_nSrcIPipv67;
+    if (pattern_eSrcIP_Select == GSW_PCE_IP_V4)
+    {
+        param.pattern.nSrcIP.nIPv4 = pattern_nSrcIPipv4;
+    }
+    else if (pattern_eSrcIP_Select == GSW_PCE_IP_V6)
+    {
+        param.pattern.nSrcIP.nIPv6[0] = pattern_nSrcIPipv60;
+        param.pattern.nSrcIP.nIPv6[1] = pattern_nSrcIPipv61;
+        param.pattern.nSrcIP.nIPv6[2] = pattern_nSrcIPipv62;
+        param.pattern.nSrcIP.nIPv6[3] = pattern_nSrcIPipv63;
+        param.pattern.nSrcIP.nIPv6[4] = pattern_nSrcIPipv64;
+        param.pattern.nSrcIP.nIPv6[5] = pattern_nSrcIPipv65;
+        param.pattern.nSrcIP.nIPv6[6] = pattern_nSrcIPipv66;
+        param.pattern.nSrcIP.nIPv6[7] = pattern_nSrcIPipv67;
+    }
     param.pattern.nSrcIP_Mask = pattern_nSrcIP_Mask;
     param.pattern.bEtherTypeEnable = pattern_bEtherTypeEnable;
     param.pattern.nEtherType = pattern_nEtherType;
@@ -319,8 +331,8 @@ int pyGSW_PceRuleRead(int idx)
     fprintf(fp, "   , bAppMaskRangeMSB_Select = %d, nAppMaskRangeMSB = %d\r\n", pattern.bAppMaskRangeMSB_Select, pattern.nAppMaskRangeMSB);
     fprintf(fp, "   , bAppDataLSB_Enable = %d, nAppDataLSB = %d\r\n", pattern.bAppDataLSB_Enable, pattern.nAppDataLSB);
     fprintf(fp, "   , bAppMaskRangeLSB_Select = %d, nAppMaskRangeLSB = %d\r\n", pattern.bAppMaskRangeLSB_Select, pattern.nAppMaskRangeLSB);
-    fprintf(fp, "   , eDstIP_Select = %d, nDstIPipv4 = %d.%d.%d.%d, nDstIPipv6 = %02x%02x:%02x%02x:%02x%02x:%02x%02x, nDstIP_Mask = %d\r\n", pattern.eDstIP_Select, pattern.nDstIP.nIPv4/0x1000000, pattern.nDstIP.nIPv4/0x10000%0x100, pattern.nDstIP.nIPv4/0x100%0x100, pattern.nDstIP.nIPv4%0x100, pattern.nDstIP.nIPv6[0], pattern.nDstIP.nIPv6[1], pattern.nDstIP.nIPv6[2], pattern.nDstIP.nIPv6[3], pattern.nDstIP.nIPv6[4], pattern.nDstIP.nIPv6[5], pattern.nDstIP.nIPv6[6], pattern.nDstIP.nIPv6[7], pattern.nDstIP_Mask);
-    fprintf(fp, "   , eSrcIP_Select = %d, nSrcIPipv4 = %d.%d.%d.%d, nSrcIPipv6 = %02x%02x:%02x%02x:%02x%02x:%02x%02x, nSrcIP_Mask = %d\r\n", pattern.eSrcIP_Select, pattern.nSrcIP.nIPv4/0x1000000, pattern.nDstIP.nIPv4/0x10000%0x100, pattern.nDstIP.nIPv4/0x100%0x100, pattern.nDstIP.nIPv4%0x100, pattern.nSrcIP.nIPv6[0], pattern.nSrcIP.nIPv6[1], pattern.nSrcIP.nIPv6[2], pattern.nSrcIP.nIPv6[3], pattern.nSrcIP.nIPv6[4], pattern.nSrcIP.nIPv6[5], pattern.nSrcIP.nIPv6[6], pattern.nSrcIP.nIPv6[7], pattern.nSrcIP_Mask);
+    fprintf(fp, "   , eDstIP_Select = %d, nDstIPipv4 = %d.%d.%d.%d, nDstIPipv6 = %02x%02x:%02x%02x:%02x%02x:%02x%02x, nDstIP_Mask = %d\r\n", pattern.eDstIP_Select, (pattern.nDstIP.nIPv4 >> 24) & 0xFF, (pattern.nDstIP.nIPv4 >> 16) & 0xFF, (pattern.nDstIP.nIPv4 >> 8) & 0xFF, pattern.nDstIP.nIPv4 & 0xFF, pattern.nDstIP.nIPv6[0], pattern.nDstIP.nIPv6[1], pattern.nDstIP.nIPv6[2], pattern.nDstIP.nIPv6[3], pattern.nDstIP.nIPv6[4], pattern.nDstIP.nIPv6[5], pattern.nDstIP.nIPv6[6], pattern.nDstIP.nIPv6[7], pattern.nDstIP_Mask);
+    fprintf(fp, "   , eSrcIP_Select = %d, nSrcIPipv4 = %d.%d.%d.%d, nSrcIPipv6 = %02x%02x:%02x%02x:%02x%02x:%02x%02x, nSrcIP_Mask = %d\r\n", pattern.eSrcIP_Select, (pattern.nSrcIP.nIPv4 >> 24) & 0xFF, (pattern.nSrcIP.nIPv4 >> 16) & 0xFF, (pattern.nSrcIP.nIPv4 >> 8) & 0xFF, pattern.nSrcIP.nIPv4 & 0xFF, pattern.nSrcIP.nIPv6[0], pattern.nSrcIP.nIPv6[1], pattern.nSrcIP.nIPv6[2], pattern.nSrcIP.nIPv6[3], pattern.nSrcIP.nIPv6[4], pattern.nSrcIP.nIPv6[5], pattern.nSrcIP.nIPv6[6], pattern.nSrcIP.nIPv6[7], pattern.nSrcIP_Mask);
     fprintf(fp, "   , bEtherTypeEnable = %d, nEtherType = %d, nEtherTypeMask = %d\r\n", pattern.bEtherTypeEnable, pattern.nEtherType, pattern.nEtherTypeMask);
     fprintf(fp, "   , bProtocolEnable = %d, nProtocol = %d, nProtocolMask = %d\r\n", pattern.bProtocolEnable, pattern.nProtocol, pattern.nProtocolMask);
     fprintf(fp, "   , bSessionIdEnable = %d, nSessionId = %d, bVid = %d, nVid = %d\r\n", pattern.bSessionIdEnable, pattern.nSessionId, pattern.bVid, pattern.nVid);
