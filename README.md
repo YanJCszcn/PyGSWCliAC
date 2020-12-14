@@ -1,0 +1,1 @@
+Clone the repository, put all GSW stand alone API 1.0.5 *.c and *.h in the same folder, compile acc. to "Raspberry Pi ARM compile.txt". It was compiled successfully in Respberry Pi 4B, likely can be comnpiled in other Linux environment also. If want to compile in Windows, need change some macro define in API source code.
